@@ -46,7 +46,7 @@ const Submit = () => {
 
     return (
         <div className="mt-10 flex flex-col items-center justify-center mb-10 mx-8">
-            <div className='p-3 text-white bg-black text-wrap sm:w-[800px] mx-auto flex gap-1 rounded-md mb-6'>
+            <div className='p-3 text-white bg-black text-wrap sm:max-w-3xl mx-auto flex gap-1 rounded-md mb-6'>
                 <CircleAlert color='white' />
                 <div>
                     <p>Posts Deletion Not Available</p>
@@ -97,14 +97,14 @@ const Submit = () => {
                                 </FormItem>
                             )}
                         />
-                        <Button type="submit" disabled={isSubmitting} className="w-full">
+                        <Button type="submit" disabled={isSubmitting} className="w-full bg-[#F24463]">
                             {isSubmitting ? (
                                 <>
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                     Please wait
                                 </>
                             ) : (
-                                'Send Message'
+                                'Send'
                             )}
                         </Button>
                     </form>
