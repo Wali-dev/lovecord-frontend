@@ -4,13 +4,12 @@ import { CircleAlert, Loader2 } from 'lucide-react';
 import React, { useState } from 'react';
 import { useForm } from "react-hook-form"
 import axios from 'axios'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
@@ -27,7 +26,15 @@ const Browse = () => {
 
     const onSubmit = async (data: FormData) => {
         setIsSubmitting(true)
-        console.log(data)
+        try {
+            const response = await axios.get(`/api/check-username-unique`, {
+                params: { username: data.recipient }
+            });
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+        setIsSubmitting(false)
     }
 
     return (

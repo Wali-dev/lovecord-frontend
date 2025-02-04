@@ -1,7 +1,7 @@
 "use client"
 
 import { CircleAlert, Loader2 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form"
 import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
@@ -9,6 +9,7 @@ import axios from 'axios'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { useDebounceCallback } from 'usehooks-ts'
 
 interface FormData {
     recipient: string;
@@ -22,6 +23,11 @@ const Submit = () => {
     const form = useForm<FormData>()
     const { handleSubmit, control } = form
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [songName, setSongname] = useState('');
+    const [songLinst, setSongList] = useState('')
+
+    //use debounce for getting response after 300ms
+    const debounced = useDebounceCallback(setSongname, 300)
 
     const onSubmit = async (data: FormData) => {
         setIsSubmitting(true)
@@ -44,6 +50,25 @@ const Submit = () => {
         }
     }
 
+    useEffect(() => {
+        const getSongs = async () => {
+            if (!songName) return;
+            setIsSubmitting(true);
+            try {
+                setSongList('')
+                // const response = await axios.get(`/api/check-username-unique?username=${songName}`);
+                console.log(songName)
+                // setSongList(response.data)
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsSubmitting(false);
+            }
+        };
+
+        getSongs();
+    }, [songName]);
+
     return (
         <div className="mt-10 flex flex-col items-center justify-center mb-10 mx-8">
             <div className='p-3 text-white bg-black text-wrap sm:max-w-3xl mx-auto flex gap-1 rounded-md mb-6'>
@@ -65,7 +90,11 @@ const Submit = () => {
                                 <FormItem>
                                     <FormLabel>Recipient</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Recipient's name" {...field} />
+                                        <Input placeholder="Recipient's name" {...field}
+                                            onChange={(e) => {
+                                                field.onChange(e)
+                                                debounced(e.target.value)
+                                            }} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

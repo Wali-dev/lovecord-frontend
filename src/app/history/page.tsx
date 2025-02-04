@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const History = () => {
     return (
-        <div className="mt-10 mb-16 h-screen mx-2">
+        <div className="mt-10 mb-16  mx-2">
 
             <div className="p-3 text-white bg-black text-center sm:max-w-3xl mx-auto flex items-center justify-center gap-2 rounded-md mb-6">
                 <span className="text-sm sm:text-base">Your history will be removed after your cookies are deleted 😁</span>

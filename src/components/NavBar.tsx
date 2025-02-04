@@ -5,7 +5,7 @@ import Link from 'next/link'
 const NavBar = () => {
     return (
         <div className='border-b-2 flex items-center justify-between min-h-[60px] sm:max-w-3xl mx-auto px-2 sm:px-0'>
-            <div className='font-extralight text-xl sm:text-2xl lg:text-3xl mr-2'>LoveCord</div>
+            <Link href='/'><div className='font-extralight text-xl sm:text-2xl lg:text-3xl mr-2'>LoveCord</div></Link>
             <div className='flex gap-2 sm:gap-8 lg:gap-14'>
                 <Link href="/submit" className="cursor-pointer text-sm sm:text-base lg:text-lg">
                     Post
