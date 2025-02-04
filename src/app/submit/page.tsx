@@ -17,37 +17,86 @@ interface FormData {
     song: string;
 }
 
+interface Song {
+    external_urls: any;
+    name: string;
+    album: {
+        images: { url: string }[];
+    };
+}
+
+
 const Submit = () => {
     const { toast } = useToast()
     const router = useRouter()
     const form = useForm<FormData>()
     const { handleSubmit, control } = form
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [afterSelection, setafterSelection] = useState(true)
     const [songName, setSongname] = useState('');
-    const [songLinst, setSongList] = useState('')
+    // const [selectedSongName, setSelectedSongName] = useState('');
+    const [selectedSongUrl, setSelectedSongUrl] = useState('');
+    // const [songList, setSongList] = useState('')
+    const [songList, setSongList] = useState<Song[]>([]);
+    const [selectedSongDiv, setSelectedSongDiv] = useState<React.ReactNode | null>(null);
+
+
+    const accessToken = process.env.NEXT_PUBLIC_SPOTIFY_ACCESSTOKEN;
 
     //use debounce for getting response after 300ms
-    const debounced = useDebounceCallback(setSongname, 300)
+    const debounced = useDebounceCallback((value: string) => {
+        setafterSelection(true)
+        setSongname(value)
+    }, 1000)
+
+
+    const selectSong = (song: Song, index: number) => {
+        // Create the song div
+        const songDiv = (
+            <div
+                key={index}
+                className='bg-gray-200 flex justify-start gap-2 items-center p-2 border-b cursor-pointer hover:bg-gray-200'
+            >
+                <img
+                    src={song.album.images[2]?.url}
+                    alt={song.name}
+                    width={40}
+                    height={20}
+                    className='rounded'
+                />
+                <h3>{song.name}</h3>
+            </div>
+        );
+
+        // Set the selected song div
+        setSelectedSongDiv(songDiv);
+        // setSelectedSongName(song.name)
+        // Set the song name in the form
+        // setValue('song', song.name);
+        setSelectedSongUrl(song?.external_urls?.spotify)
+    }
 
     const onSubmit = async (data: FormData) => {
-        setIsSubmitting(true)
-        try {
-            await axios.post('/api/send-message', data)
-            toast({
-                title: 'Success',
-                description: 'Message sent successfully'
-            })
-            router.replace('/history')
-        } catch (error) {
-            console.error("error in sending message", error)
-            toast({
-                title: "Message sending failed",
-                description: "An error occurred",
-                variant: "destructive"
-            })
-        } finally {
-            setIsSubmitting(false)
-        }
+        // setIsSubmitting(true)
+        // try {
+        //     await axios.post('/api/send-message', data)
+        //     toast({
+        //         title: 'Success',
+        //         description: 'Message sent successfully'
+        //     })
+        //     router.replace('/history')
+        // } catch (error) {
+        //     console.error("error in sending message", error)
+        //     toast({
+        //         title: "Message sending failed",
+        //         description: "An error occurred",
+        //         variant: "destructive"
+        //     })
+        // } finally {
+        //     setIsSubmitting(false)
+        // }
+        console.log(selectedSongUrl)
+
     }
 
     useEffect(() => {
@@ -55,9 +104,20 @@ const Submit = () => {
             if (!songName) return;
             setIsSubmitting(true);
             try {
-                setSongList('')
-                // const response = await axios.get(`/api/check-username-unique?username=${songName}`);
-                console.log(songName)
+                setSongList(songList)
+                const response = await axios.get(
+                    `https://api.spotify.com/v1/search?q=${songName}&type=track&limit=5`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
+
+                setSongList(response.data.tracks.items)
+
+                console.log(songList)
+
                 // setSongList(response.data)
             } catch (error) {
                 console.error(error);
@@ -91,10 +151,7 @@ const Submit = () => {
                                     <FormLabel>Recipient</FormLabel>
                                     <FormControl>
                                         <Input placeholder="Recipient's name" {...field}
-                                            onChange={(e) => {
-                                                field.onChange(e)
-                                                debounced(e.target.value)
-                                            }} />
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -113,6 +170,23 @@ const Submit = () => {
                                 </FormItem>
                             )}
                         />
+                        {/* <FormField
+                            control={control}
+                            name="song"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Song</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Song title" className='h-10' {...field}
+                                            onChange={(e) => {
+                                                field.onChange(e)
+                                                debounced(e.target.value)
+                                            }} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        /> */}
                         <FormField
                             control={control}
                             name="song"
@@ -120,12 +194,68 @@ const Submit = () => {
                                 <FormItem>
                                     <FormLabel>Song</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Song title" className='h-10' {...field} />
+                                        <Input
+                                            placeholder="Song title"
+                                            className='h-10'
+                                            {...field}
+                                            onChange={(e) => {
+                                                field.onChange(e)
+                                                debounced(e.target.value)
+                                            }}
+                                        // value={...selectedSongName}
+                                        />
                                     </FormControl>
+                                    {selectedSongDiv && (
+                                        <div className="mt-2">
+                                            {selectedSongDiv}
+                                        </div>
+                                    )}
                                     <FormMessage />
                                 </FormItem>
                             )}
                         />
+                        {/* <div>
+                            {afterSelection && {songList.length > 0 &&
+                                songList.map((song: Song, index: number) => (
+                                    <div
+                                        key={index}
+                                        className='bg-gray-100 flex justify-start gap-2 items-center p-2 border-b cursor-pointer hover:bg-gray-200'
+                                        onClick={() => selectSong(song); setafterSelection(!afterSelection) }
+                                    >
+                                        <img
+                                            src={song.album.images[2]?.url}
+                                            alt={song.name}
+                                            width={40}
+                                            height={20}
+                                            className='rounded'
+                                        />
+                                        <h3>{song.name}</h3>
+                                    </div>
+                                ))}}
+                        </div> */}
+                        <div>
+                            {afterSelection &&
+                                songList.length > 0 &&
+                                songList.map((song: Song, index: number) => (
+                                    <div
+                                        key={index}
+                                        className="bg-gray-100 flex justify-start gap-2 items-center p-2 border-b cursor-pointer hover:bg-gray-200"
+                                        onClick={() => {
+                                            selectSong(song, index);
+                                            setafterSelection(false);
+                                        }}
+                                    >
+                                        <img
+                                            src={song.album.images[2]?.url}
+                                            alt={song.name}
+                                            width={40}
+                                            height={20}
+                                            className="rounded"
+                                        />
+                                        <h3>{song.name}</h3>
+                                    </div>
+                                ))}
+                        </div>
                         <Button type="submit" disabled={isSubmitting} className="w-full bg-[#F24463]">
                             {isSubmitting ? (
                                 <>
