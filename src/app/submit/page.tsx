@@ -3,7 +3,7 @@
 import { CircleAlert, Loader2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form"
-import { useToast } from "@/hooks/use-toast"
+// import { useToast } from "@/hooks/use-toast"
 import { useRouter } from "next/navigation"
 import axios from 'axios'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
@@ -116,9 +116,7 @@ const Submit = () => {
 
                 setSongList(response.data.tracks.items)
 
-                console.log(songList)
-
-                // setSongList(response.data)
+                // console.log(songList)
             } catch (error) {
                 console.error(error);
             } finally {
