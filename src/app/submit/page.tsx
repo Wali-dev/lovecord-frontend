@@ -4,12 +4,13 @@ import { CircleAlert, Loader2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form"
 // import { useToast } from "@/hooks/use-toast"
-import { useRouter } from "next/navigation"
+// import { useRouter } from "next/navigation"
 import axios from 'axios'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useDebounceCallback } from 'usehooks-ts'
+import Image from 'next/image';
 
 interface FormData {
     recipient: string;
@@ -18,7 +19,9 @@ interface FormData {
 }
 
 interface Song {
-    external_urls: any;
+    external_urls: {
+        spotify: string;
+    };
     name: string;
     album: {
         images: { url: string }[];
@@ -26,9 +29,9 @@ interface Song {
 }
 
 
-const Submit = () => {
-    const { toast } = useToast()
-    const router = useRouter()
+const Submit: React.FC = () => {
+    // const { toast } = useToast()
+    // const router = useRouter()
     const form = useForm<FormData>()
     const { handleSubmit, control } = form
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -57,11 +60,11 @@ const Submit = () => {
                 key={index}
                 className='bg-gray-200 flex justify-start gap-2 items-center p-2 border-b cursor-pointer hover:bg-gray-200'
             >
-                <img
+                <Image
                     src={song.album.images[2]?.url}
                     alt={song.name}
                     width={40}
-                    height={20}
+                    height={40}
                     className='rounded'
                 />
                 <h3>{song.name}</h3>
@@ -95,7 +98,7 @@ const Submit = () => {
         // } finally {
         //     setIsSubmitting(false)
         // }
-        console.log(selectedSongUrl)
+        console.log(selectedSongUrl, data)
 
     }
 
@@ -104,7 +107,6 @@ const Submit = () => {
             if (!songName) return;
             setIsSubmitting(true);
             try {
-                setSongList(songList)
                 const response = await axios.get(
                     `https://api.spotify.com/v1/search?q=${songName}&type=track&limit=5`,
                     {
@@ -114,9 +116,7 @@ const Submit = () => {
                     }
                 );
 
-                setSongList(response.data.tracks.items)
-
-                // console.log(songList)
+                setSongList(response.data.tracks.items);
             } catch (error) {
                 console.error(error);
             } finally {
@@ -125,7 +125,7 @@ const Submit = () => {
         };
 
         getSongs();
-    }, [songName]);
+    }, [songName, accessToken]);
 
     return (
         <div className="mt-10 flex flex-col items-center justify-center mb-10 mx-8">
@@ -243,11 +243,11 @@ const Submit = () => {
                                             setafterSelection(false);
                                         }}
                                     >
-                                        <img
+                                        <Image
                                             src={song.album.images[2]?.url}
                                             alt={song.name}
                                             width={40}
-                                            height={20}
+                                            height={40}
                                             className="rounded"
                                         />
                                         <h3>{song.name}</h3>
