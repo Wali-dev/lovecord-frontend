@@ -4,7 +4,7 @@ import { CircleAlert, Loader2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form"
 // import { useToast } from "@/hooks/use-toast"
-// import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import axios from 'axios'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
@@ -31,7 +31,7 @@ interface Song {
 
 const Submit: React.FC = () => {
     // const { toast } = useToast()
-    // const router = useRouter()
+    const router = useRouter()
     const form = useForm<FormData>()
     const { handleSubmit, control } = form
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -44,7 +44,10 @@ const Submit: React.FC = () => {
     const [selectedSongDiv, setSelectedSongDiv] = useState<React.ReactNode | null>(null);
 
 
-    const accessToken = process.env.NEXT_PUBLIC_SPOTIFY_ACCESSTOKEN;
+    const accessTokenUrl = process.env.NEXT_PUBLIC_SPOTIFY_ACCESSTOKEN_URL;
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    const [accessToken, setAccessToken] = useState('');
 
     //use debounce for getting response after 300ms
     const debounced = useDebounceCallback((value: string) => {
@@ -80,27 +83,43 @@ const Submit: React.FC = () => {
     }
 
     const onSubmit = async (data: FormData) => {
-        // setIsSubmitting(true)
-        // try {
-        //     await axios.post('/api/send-message', data)
-        //     toast({
-        //         title: 'Success',
-        //         description: 'Message sent successfully'
-        //     })
-        //     router.replace('/history')
-        // } catch (error) {
-        //     console.error("error in sending message", error)
-        //     toast({
-        //         title: "Message sending failed",
-        //         description: "An error occurred",
-        //         variant: "destructive"
-        //     })
-        // } finally {
-        //     setIsSubmitting(false)
-        // }
-        console.log(selectedSongUrl, data)
+        setIsSubmitting(true)
+
+        try {
+            await axios.post(`${backendUrl}/message`, {
+                recipient: data.recipient,
+                message: data.message,
+                songurl: selectedSongUrl
+
+            });
+
+            router.replace('/history')
+        } catch (error) {
+            console.error("error in sending message", error)
+
+        } finally {
+            setIsSubmitting(false)
+        }
+        // console.log(selectedSongUrl, data)
 
     }
+
+    useEffect(() => {
+        const getFreshAccessToken = async () => {
+            setIsSubmitting(true);
+            try {
+                const response = await axios.get(
+                    `${accessTokenUrl}`);
+                setAccessToken(response?.data?.[0].token)
+                // console.log(response?.data?.[0].token)
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setIsSubmitting(false);
+            }
+        }
+        getFreshAccessToken()
+    }, [accessTokenUrl]);
 
     useEffect(() => {
         const getSongs = async () => {
@@ -196,11 +215,11 @@ const Submit: React.FC = () => {
                                             placeholder="Song title"
                                             className='h-10'
                                             {...field}
+                                            value={field.value || selectedSongDiv ? field.value || songName : ''}
                                             onChange={(e) => {
                                                 field.onChange(e)
                                                 debounced(e.target.value)
                                             }}
-                                        // value={...selectedSongName}
                                         />
                                     </FormControl>
                                     {selectedSongDiv && (
