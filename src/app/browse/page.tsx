@@ -1,45 +1,84 @@
-"use client"
+"use client";
 
-import { CircleAlert, Loader2 } from 'lucide-react';
-import React, { useState } from 'react';
-import { useForm } from "react-hook-form"
-import axios from 'axios'
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+import { CircleAlert, Loader2 } from "lucide-react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface FormData {
     recipient: string;
 }
 
+interface Message {
+    id: string;
+    recipient: string;
+    message: string;
+}
+
 const Browse = () => {
-    const form = useForm<FormData>()
-    const { handleSubmit, control } = form
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const form = useForm<FormData>();
+    const { handleSubmit, control } = form;
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const observer = useRef<IntersectionObserver | null>(null);
+
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+    const fetchMessages = async (recipient: string, pageNum: number) => {
+        if (loading || !hasMore) return;
+        setLoading(true);
+        try {
+            const response = await axios.get(`${backendUrl}/messages/recipient`, {
+                params: { recipient, page: pageNum, per_page: 5 },
+            });
+            const newMessages = response.data.messages;
+            console.log(newMessages)
+            setMessages((prev) => [...prev, ...newMessages]);
+            setHasMore(newMessages.length > 0);
+        } catch (error) {
+            console.error("Error fetching messages", error);
+        }
+        setLoading(false);
+    };
 
     const onSubmit = async (data: FormData) => {
-        setIsSubmitting(true)
-        try {
-            const response = await axios.get(`/api/check-username-unique`, {
-                params: { username: data.recipient }
+        setIsSubmitting(true);
+        setMessages([]);
+        setPage(1);
+        setHasMore(true);
+        await fetchMessages(data.recipient, 1);
+        setIsSubmitting(false);
+    };
+
+    const lastMessageRef = useCallback(
+        (node: HTMLElement | null) => {
+            if (loading) return;
+            if (observer.current) observer.current.disconnect();
+            observer.current = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting && hasMore) {
+                    setPage((prev) => prev + 1);
+                }
             });
-            console.log(response)
-        } catch (error) {
-            console.log(error)
+            if (node) observer.current.observe(node);
+        },
+        [loading, hasMore]
+    );
+
+    useEffect(() => {
+        if (page > 1) {
+            fetchMessages(form.getValues("recipient"), page);
         }
-        setIsSubmitting(false)
-    }
+    }, [page]);
 
     return (
         <div className="mt-10 flex flex-col items-center justify-center mb-10 px-4">
-
             <div className="p-3 text-white bg-black sm:max-w-3xl w-full flex items-start gap-3 rounded-md mb-6">
                 <CircleAlert color="white" className="mt-1" />
                 <div>
@@ -49,9 +88,8 @@ const Browse = () => {
                     </p>
                 </div>
             </div>
-            <div className='font-mono  mb-5 px-4 sm:max-w-3xl text-center text-sm'>
-                We’d love to here your feedback and suggestions to help us improve LoveChord.
-                Click here to share your thoughts with us!!!
+            <div className="font-mono mb-5 px-4 sm:max-w-3xl text-center text-sm">
+                We’d love to hear your feedback and suggestions to help us improve LoveChord. Click here to share your thoughts with us!
             </div>
             <div className="w-full sm:max-w-3xl mb-5">
                 <Form {...form}>
@@ -68,46 +106,51 @@ const Browse = () => {
                                 </FormItem>
                             )}
                         />
-
                         <Button type="submit" disabled={isSubmitting} className="bg-[#F24463] w-full sm:w-auto">
                             {isSubmitting ? (
                                 <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Please wait
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait
                                 </>
                             ) : (
-                                'Search'
+                                "Search"
                             )}
                         </Button>
                     </form>
                 </Form>
             </div>
-            <div className='card-section grid grid-cols-2 gap-2 sm:max-w-3xl'>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>To: name</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p>Message: Lorem ipsum dolor sitronem saepe harum nostrum porro tempora doloribus unde rem?</p>
-                    </CardContent>
-                    <CardFooter>
-                        <p>Card Footer</p>
-                    </CardFooter>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>To: name</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p>Message: Lorem ipsum dolor sitronem saepe harum nostrum porro tempora doloribus unde rem?</p>
-                    </CardContent>
-                    <CardFooter>
-                        <p>Card Footer</p>
-                    </CardFooter>
-                </Card>
-            </div>
-        </div>
+            <div className="grid grid-cols-2 gap-4 sm:max-w-3xl w-full">
+                {messages.map((msg, index) => {
+                    if (index === messages.length - 1) {
+                        return (
+                            <Card key={msg.id} ref={lastMessageRef}>
+                                <CardHeader>
+                                    <CardTitle>To: {msg.recipient}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p>{msg.message}</p>
+                                </CardContent>
+                            </Card>
 
+                        );
+                    }
+                    return (
+                        <Card key={msg.id} className="h-56">
+                            <CardHeader>
+                                <CardTitle>To: {msg.recipient}</CardTitle>
+                            </CardHeader>
+                            <CardContent className="justify-between h-full">
+                                <p className="font-mono text-2xl mb-9">{msg.message}</p>
+                                <div className="bg-slate-100 self-end">fkkafa</div>
+                            </CardContent>
+                            <CardFooter>
+
+                            </CardFooter>
+                        </Card>
+                    );
+                })}
+            </div>
+            {loading && <Loader2 className="animate-spin mt-4" />}
+        </div>
     );
 };
 
