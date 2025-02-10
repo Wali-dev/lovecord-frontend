@@ -7,7 +7,7 @@ import axios from "axios";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface FormData {
     recipient: string;
@@ -39,7 +39,6 @@ const Browse = () => {
                 params: { recipient, page: pageNum, per_page: 5 },
             });
             const newMessages = response.data.messages;
-            console.log(newMessages)
             setMessages((prev) => [...prev, ...newMessages]);
             setHasMore(newMessages.length > 0);
         } catch (error) {
@@ -118,36 +117,24 @@ const Browse = () => {
                     </form>
                 </Form>
             </div>
-            <div className="grid grid-cols-2 gap-4 sm:max-w-3xl w-full">
-                {messages.map((msg, index) => {
-                    if (index === messages.length - 1) {
-                        return (
-                            <Card key={msg.id} ref={lastMessageRef}>
-                                <CardHeader>
-                                    <CardTitle>To: {msg.recipient}</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p>{msg.message}</p>
-                                </CardContent>
-                            </Card>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:max-w-3xl w-full">
+                {messages.map((msg, index) => (
+                    <div
+                        key={index}
+                        className="h-56 rounded-lg flex flex-col justify-between border shadow-sm relative"
+                        ref={index === messages.length - 1 ? lastMessageRef : undefined}
+                    >
+                        <div className="font-bold text-lg p-3">To: {msg.recipient}</div>
+                        <p className="font-mono text-2xl p-3 flex-grow ">
+                            {msg.message}
+                        </p>
 
-                        );
-                    }
-                    return (
-                        <Card key={msg.id} className="h-56">
-                            <CardHeader>
-                                <CardTitle>To: {msg.recipient}</CardTitle>
-                            </CardHeader>
-                            <CardContent className="justify-between h-full">
-                                <p className="font-mono text-2xl mb-9">{msg.message}</p>
-                                <div className="bg-slate-100 self-end">fkkafa</div>
-                            </CardContent>
-                            <CardFooter>
-
-                            </CardFooter>
-                        </Card>
-                    );
-                })}
+                        <div className="bg-slate-400 absolute bottom-0 left-0 right-0 h-16">
+                            <div></div>
+                            <div></div>
+                        </div>
+                    </div>
+                ))}
             </div>
             {loading && <Loader2 className="animate-spin mt-4" />}
         </div>

@@ -1,11 +1,10 @@
 "use client"
 import React from 'react';
-import Link from 'next/link'
-
+import Link from 'next/link';
 const Footer = () => {
     return (
-        <footer className="border-t-2 text-center py-6 bottom-0 w-full">
-            <div className="flex flex-wrap justify-center gap-4 px-4 text-sm md:text-base">
+        <footer className="border-t-2 text-center py-4 w-full">
+            <div className="flex flex-wrap justify-center gap-4 text-base">
                 <Link href="/feedback" className="cursor-pointer hover:underline">
                     Feedback
                 </Link>
@@ -16,9 +15,8 @@ const Footer = () => {
                     Support
                 </Link>
             </div>
-            <p className="mt-3 text-xs md:text-sm px-4">2025 LoveCord. All rights reserved.</p>
+            <p className="mt-2 text-sm">2025 LoveCord. All rights reserved.</p>
         </footer>
     );
 };
-
 export default Footer;

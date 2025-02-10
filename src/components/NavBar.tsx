@@ -1,25 +1,52 @@
 "use client"
-import React from 'react';
-import Link from 'next/link'
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { Menu, X } from 'lucide-react';
 
 const NavBar = () => {
+    const [isOpen, setIsOpen] = useState(false);
+
     return (
-        <div className='border-b-2 flex items-center justify-between min-h-[60px] sm:max-w-3xl mx-auto px-2 sm:px-0'>
-            <Link href='/'><div className='font-extralight text-xl sm:text-2xl lg:text-3xl mr-2'>LoveCord</div></Link>
-            <div className='flex gap-2 sm:gap-8 lg:gap-14'>
-                <Link href="/submit" className="cursor-pointer text-sm sm:text-base lg:text-lg">
+        <div className='border-b-2 flex items-center justify-between min-h-[60px] w-full sm:max-w-3xl mx-auto px-4 relative z-[9999]'>
+            <Link href='/'><div className='font-light text-2xl sm:text-3xl mr-4'>LoveCord</div></Link>
+
+            <div className='hidden sm:flex gap-6'>
+                <Link href="/submit" className="cursor-pointer text-lg">
                     Post
                 </Link>
-                <Link href="/browse" className="cursor-pointer text-sm sm:text-base lg:text-lg">
+                <Link href="/browse" className="cursor-pointer text-lg">
                     Browse
                 </Link>
-                <Link href="/history" className="cursor-pointer text-sm sm:text-base lg:text-lg">
+                <Link href="/history" className="cursor-pointer text-lg">
                     History
                 </Link>
-                <Link href="/support" className="cursor-pointer text-sm sm:text-base lg:text-lg">
+                <Link href="/support" className="cursor-pointer text-lg">
                     Support
                 </Link>
             </div>
+
+            <div className='sm:hidden'>
+                <button onClick={() => setIsOpen(!isOpen)}>
+                    {isOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+            </div>
+
+            {isOpen && (
+                <div className='absolute top-16 left-0 w-full bg-white shadow-md flex flex-col items-center py-4 sm:hidden z-[9999]'>
+                    <Link href="/submit" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
+                        Post
+                    </Link>
+                    <Link href="/browse" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
+                        Browse
+                    </Link>
+                    <Link href="/history" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
+                        History
+                    </Link>
+                    <Link href="/support" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
+                        Support
+                    </Link>
+                </div>
+            )}
         </div>
     );
 };
