@@ -1,12 +1,15 @@
 "use client";
 
-import { CircleAlert, Loader2 } from "lucide-react";
+import { AudioLines, CircleAlert, Loader2 } from "lucide-react";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
+import Link from "next/link";
 // import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface FormData {
@@ -14,6 +17,9 @@ interface FormData {
 }
 
 interface Message {
+    [x: string]: Url;
+    songimgae: string | StaticImport;
+    songname: string;
     id: string;
     recipient: string;
     message: string;
@@ -29,7 +35,7 @@ const Browse = () => {
     const [hasMore, setHasMore] = useState(true);
     const observer = useRef<IntersectionObserver | null>(null);
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_LOCAL;
 
     const fetchMessages = async (recipient: string, pageNum: number) => {
         if (loading || !hasMore) return;
@@ -40,6 +46,7 @@ const Browse = () => {
             });
             const newMessages = response.data.messages;
             setMessages((prev) => [...prev, ...newMessages]);
+            console.log(messages)
             setHasMore(newMessages.length > 0);
         } catch (error) {
             console.error("Error fetching messages", error);
@@ -128,11 +135,23 @@ const Browse = () => {
                         <p className="font-mono text-2xl p-3 flex-grow ">
                             {msg.message}
                         </p>
-
-                        <div className="bg-slate-400 absolute bottom-0 left-0 right-0 h-16">
-                            <div></div>
-                            <div></div>
-                        </div>
+                        <Link href={msg?.songurl} target="_blank" rel="noopener noreferrer">
+                            <div className="bg-slate-200  h-16 flex items-center justify-around px-4  py-2 ">
+                                <div className="flex items-center gap-3">
+                                    <Image
+                                        src={msg?.songimgae}
+                                        alt={msg?.songname}
+                                        width={50}
+                                        height={50}
+                                        className="rounded"
+                                    />
+                                    <div className="text-xl">{msg?.songname}</div>
+                                </div>
+                                <div className="ml-auto lg:mr-0">
+                                    <AudioLines size={26} />
+                                </div>
+                            </div>
+                        </Link>
                     </div>
                 ))}
             </div>

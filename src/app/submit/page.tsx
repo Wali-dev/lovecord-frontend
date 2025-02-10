@@ -39,13 +39,15 @@ const Submit: React.FC = () => {
     const [afterSelection, setafterSelection] = useState(true)
     const [songName, setSongname] = useState('')
     const [selectedSongUrl, setSelectedSongUrl] = useState('')
+    const [selectedSongName, setSelectedSongName] = useState('')
+    const [selectedSongImage, setSelectedSongImage] = useState('')
     const [songList, setSongList] = useState<Song[]>([])
     const [selectedSongDiv, setSelectedSongDiv] = useState<React.ReactNode | null>(null)
     const [accessToken, setAccessToken] = useState('')
     const [generatedUrl, setGeneratedUrl] = useState(' ')
 
     const accessTokenUrl = process.env.NEXT_PUBLIC_SPOTIFY_ACCESSTOKEN_URL
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_LOCAL
 
     const debounced = useDebounceCallback((value: string) => {
         setafterSelection(true)
@@ -71,6 +73,9 @@ const Submit: React.FC = () => {
 
         setSelectedSongDiv(songDiv)
         setSelectedSongUrl(song?.external_urls?.spotify)
+        setSelectedSongName(song?.name)
+        setSelectedSongImage(song.album.images?.[2]?.url)
+
     }
 
     const handleSaveOnLocalMachine = (messageUrl: string) => {
@@ -120,7 +125,9 @@ const Submit: React.FC = () => {
             const response = await axios.post(`${backendUrl}/message`, {
                 recipient: data.recipient,
                 message: data.message,
-                songurl: selectedSongUrl
+                songurl: selectedSongUrl,
+                songname: selectedSongName,
+                songimage: selectedSongImage
             })
 
             setTimeout(() => {
