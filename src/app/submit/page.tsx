@@ -273,7 +273,7 @@ const Submit: React.FC = () => {
                                                 placeholder="Song title"
                                                 className='h-10'
                                                 {...field}
-                                                value={field.value || selectedSongDiv ? field.value || songName : ''}
+                                                value={field.value || songName || ''}
                                                 onChange={(e) => {
                                                     field.onChange(e)
                                                     debounced(e.target.value)
