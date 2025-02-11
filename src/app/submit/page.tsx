@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useDebounceCallback } from 'usehooks-ts'
 import Image from 'next/image'
-import OnSubmitPopup from '@/components/OnSubmitPopup'
+import OnSubmitPopup from '../../components/OnSubmitPopup'
 
 
 interface FormData {
@@ -174,7 +174,7 @@ const Submit: React.FC = () => {
         }
 
         getfreshAccessToken()
-    }, [])
+    }, [client_Id, client_Secret])
 
     useEffect(() => {
         const getSongs = async () => {
