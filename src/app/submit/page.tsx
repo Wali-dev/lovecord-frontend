@@ -46,8 +46,11 @@ const Submit: React.FC = () => {
     const [accessToken, setAccessToken] = useState('')
     const [generatedUrl, setGeneratedUrl] = useState(' ')
 
-    const accessTokenUrl = process.env.NEXT_PUBLIC_SPOTIFY_ACCESSTOKEN_URL
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_LOCAL
+
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
+
+    const client_Id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
+    const client_Secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET
 
     const debounced = useDebounceCallback((value: string) => {
         setafterSelection(true)
@@ -143,20 +146,34 @@ const Submit: React.FC = () => {
         }
     }
 
+
+
     useEffect(() => {
-        const getFreshAccessToken = async () => {
-            setIsSubmitting(true)
+        const getfreshAccessToken = async () => {
             try {
-                const response = await axios.get(`${accessTokenUrl}`)
-                setAccessToken(response?.data?.[0].token)
+                const response = await axios.post(
+                    "https://accounts.spotify.com/api/token",
+                    new URLSearchParams({
+                        grant_type: "client_credentials",
+                        client_id: client_Id ?? "",
+                        client_secret: client_Secret ?? "",
+                    }).toString(),
+                    {
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                        },
+                    }
+                );
+                setAccessToken(response.data.access_token)
             } catch (error) {
                 console.error(error)
             } finally {
                 setIsSubmitting(false)
             }
         }
-        getFreshAccessToken()
-    }, [accessTokenUrl])
+
+        getfreshAccessToken()
+    }, [])
 
     useEffect(() => {
         const getSongs = async () => {

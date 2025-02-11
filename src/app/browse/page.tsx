@@ -8,8 +8,9 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
+//import { StaticImport } from "next/dist/shared/lib/get-img-props";
 import Link from "next/link";
+import { Url } from "next/dist/shared/lib/router/router";
 // import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface FormData {
@@ -18,7 +19,7 @@ interface FormData {
 
 interface Message {
     [x: string]: Url;
-    songimgae: string | StaticImport;
+    songimgae: string,
     songname: string;
     id: string;
     recipient: string;
@@ -32,10 +33,11 @@ const Browse = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [page, setPage] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [baseUrl, setBaseUrl] = useState(' ');
     const [hasMore, setHasMore] = useState(true);
     const observer = useRef<IntersectionObserver | null>(null);
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_LOCAL;
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
     const fetchMessages = async (recipient: string, pageNum: number) => {
         if (loading || !hasMore) return;
@@ -53,6 +55,16 @@ const Browse = () => {
         }
         setLoading(false);
     };
+
+    useEffect(() => {
+        const getBaseUrl = () => {
+            if (typeof window !== "undefined") {
+                return `${window.location.protocol}//${window.location.host}`
+            }
+            return "http://localhost:3000"
+        }
+        setBaseUrl(getBaseUrl());
+    }, []);
 
     const onSubmit = async (data: FormData) => {
         setIsSubmitting(true);
@@ -124,28 +136,28 @@ const Browse = () => {
                     </form>
                 </Form>
             </div>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:max-w-3xl w-full">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:max-w-3xl w-full">
                 {messages.map((msg, index) => (
                     <div
                         key={index}
-                        className="h-56 rounded-lg flex flex-col justify-between border shadow-sm relative"
+                        className="h-56 rounded-lg flex flex-col justify-between border shadow-sm relative rounded-br-lg rounded-bl-lg"
                         ref={index === messages.length - 1 ? lastMessageRef : undefined}
                     >
                         <div className="font-bold text-lg p-3">To: {msg.recipient}</div>
                         <p className="font-mono text-2xl p-3 flex-grow ">
                             {msg.message}
                         </p>
-                        <Link href={msg?.songurl} target="_blank" rel="noopener noreferrer">
-                            <div className="bg-slate-200  h-16 flex items-center justify-around px-4  py-2 ">
+                        <Link href={`${baseUrl}/view/${msg?._id}`} target="_blank" rel="noopener noreferrer">
+                            <div className="bg-slate-200  h-16 flex items-center justify-around px-4 py-2 rounded-br-lg rounded-bl-lg shadow-sm">
                                 <div className="flex items-center gap-3">
                                     <Image
                                         src={msg?.songimgae}
                                         alt={msg?.songname}
-                                        width={50}
-                                        height={50}
+                                        width={45}
+                                        height={45}
                                         className="rounded"
                                     />
-                                    <div className="text-xl">{msg?.songname}</div>
+                                    <div className="text-sm">{msg?.songname}</div>
                                 </div>
                                 <div className="ml-auto lg:mr-0">
                                     <AudioLines size={26} />
