@@ -1,10 +1,17 @@
 "use client"
 import React from 'react';
 import Link from 'next/link';
+import { Jura } from 'next/font/google'
+
+
+const JuraFont = Jura({
+    subsets: ["latin"],
+    weight: "400",
+})
 const Footer = () => {
     return (
         <footer className="border-t-2 text-center py-4 w-full">
-            <div className="flex flex-wrap justify-center gap-4 text-base">
+            <div className={`flex flex-wrap justify-center gap-4 text-base ${JuraFont.className}`}>
                 <Link href="/feedback" className="cursor-pointer hover:underline">
                     Feedback
                 </Link>

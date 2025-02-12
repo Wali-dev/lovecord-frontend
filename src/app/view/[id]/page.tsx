@@ -8,6 +8,16 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
+import { Beth_Ellen } from 'next/font/google'
+
+const bethElenFont = Beth_Ellen({
+    subsets: ["latin"],
+    weight: "400",
+})
+
+
+
+
 interface PostDetails {
     recipient: string;
     message: string;
@@ -92,8 +102,8 @@ const Page = () => {
         <div className="container max-w-2xl mx-auto px-1 py-4 pt-4">
             <div className="p-1">
                 <CardContent className="space-y-6">
-                    <h1 className="text-2xl font-semibold text-center mt-10">
-                        Hello, {recipient}
+                    <h1 className="text-xl font-semibold text-center mt-10">
+                        Hello, <span className={`text-xl ${bethElenFont.className}`}>{recipient}</span>
                     </h1>
 
                     <p className="text-center text-muted-foreground">
@@ -120,7 +130,7 @@ const Page = () => {
                             Also, here&apos;s a message from the sender:
                         </p>
                         <div className="bg-muted p-4 rounded-lg">
-                            <p className="text-center">{message}</p>
+                            <p className={`text-center text-lg ${bethElenFont.className}`}>{message}</p>
                             <p className="text-center text-sm text-muted-foreground mt-2">
                                 <span>Sent </span>
                                 {createdAt}

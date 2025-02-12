@@ -2,15 +2,26 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
+import { Jura } from 'next/font/google'
+import { Fleur_De_Leah } from 'next/font/google'
+
+const JuraFont = Jura({
+    subsets: ["latin"],
+    weight: "400",
+})
+const fleurFont = Fleur_De_Leah({
+    subsets: ["latin"],
+    weight: "400",
+})
 
 const NavBar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
         <div className='border-b-2 flex items-center justify-between min-h-[60px] w-full sm:max-w-3xl mx-auto px-4 relative z-[9999]'>
-            <Link href='/'><div className='font-light text-2xl sm:text-3xl mr-4'>LoveCord</div></Link>
+            <Link href='/'><div className={`text-3xl sm:text-4xl mr-4 ${fleurFont.className}`} >LoveCord</div></Link>
 
-            <div className='hidden sm:flex gap-6'>
+            <div className={`hidden sm:flex gap-6 font-bold ${JuraFont.className}`}>
                 <Link href="/submit" className="cursor-pointer text-lg">
                     Post
                 </Link>
