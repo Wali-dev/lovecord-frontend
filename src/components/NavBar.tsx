@@ -19,7 +19,7 @@ const NavBar = () => {
 
     return (
         <div className='border-b-2 flex items-center justify-between min-h-[60px] w-full sm:max-w-3xl mx-auto px-4 relative z-[9999]'>
-            <Link href='/'><div className={`text-3xl sm:text-4xl mr-4 ${fleurFont.className}`} >LoveCord</div></Link>
+            <Link href='/'><div className={`text-xl sm:text-4xl mr-4 ${fleurFont.className}`} >LoveCord</div></Link>
 
             <div className={`hidden sm:flex gap-6 font-bold ${JuraFont.className}`}>
                 <Link href="/submit" className="cursor-pointer text-lg">
@@ -43,17 +43,17 @@ const NavBar = () => {
             </div>
 
             {isOpen && (
-                <div className={`first-line:absolute top-16 left-0 w-full bg-white shadow-md ${JuraFont.className} flex flex-col items-center py-4 sm:hidden z-[9999]`}>
-                    <Link href="/submit" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
+                <div className='absolute top-16 left-0 w-full bg-white shadow-md flex flex-col items-center py-4 sm:hidden z-[9999]'>
+                    <Link href="/submit" className={`cursor-pointer text-lg py-2 ${JuraFont.className}`} onClick={() => setIsOpen(false)}>
                         Post
                     </Link>
-                    <Link href="/browse" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
+                    <Link href="/browse" className={`cursor-pointer text-lg py-2 ${JuraFont.className}`} onClick={() => setIsOpen(false)}>
                         Browse
                     </Link>
-                    <Link href="/history" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
+                    <Link href="/history" className={`cursor-pointer text-lg py-2 ${JuraFont.className}`} onClick={() => setIsOpen(false)}>
                         History
                     </Link>
-                    <Link href="/support" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
+                    <Link href="/support" className={`cursor-pointer text-lg py-2 ${JuraFont.className}`} onClick={() => setIsOpen(false)}>
                         Support
                     </Link>
                 </div>
