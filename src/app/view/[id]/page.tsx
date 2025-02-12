@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface PostDetails {
     recipient: string;
     message: string;
-    createdAt: string;
+    createdAt?: string;
     songurl: string;
 }
 
@@ -28,6 +28,17 @@ const Page = () => {
     const getSpotifyTrackId = (url: string) => {
         const match = url.match(/track\/([a-zA-Z0-9]+)/);
         return match ? match[1] : null;
+    };
+
+    //Function to format the date
+    const formatCreatedAt = (createdAt?: string): string => {
+        if (!createdAt) return "Unknown date";
+        const date = new Date(createdAt);
+        return date.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        });
     };
 
     // Effect to mark client-side rendering
@@ -75,13 +86,13 @@ const Page = () => {
     // Default values for content
     const recipient = postDetails?.recipient || "there";
     const message = postDetails?.message || "No message available.";
-    const createdAt = postDetails?.createdAt || "Unknown date";
+    const createdAt = formatCreatedAt(postDetails?.createdAt) || "Unknown date";
 
     return (
         <div className="container max-w-2xl mx-auto px-1 py-4 pt-4">
-            <Card className="p-1">
+            <div className="p-1">
                 <CardContent className="space-y-6">
-                    <h1 className="text-2xl font-semibold text-center">
+                    <h1 className="text-2xl font-semibold text-center mt-10">
                         Hello, {recipient}
                     </h1>
 
@@ -105,12 +116,13 @@ const Page = () => {
                     )}
 
                     <div className="space-y-4">
-                        <p className="text-center font-medium">
+                        <p className="text-center font-medium ">
                             Also, here&apos;s a message from the sender:
                         </p>
                         <div className="bg-muted p-4 rounded-lg">
                             <p className="text-center">{message}</p>
                             <p className="text-center text-sm text-muted-foreground mt-2">
+                                <span>Sent </span>
                                 {createdAt}
                             </p>
                         </div>
@@ -127,7 +139,7 @@ const Page = () => {
                         </Button>
                     </Link>
                 </CardFooter>
-            </Card>
+            </div>
         </div>
     );
 };

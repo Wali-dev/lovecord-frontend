@@ -37,7 +37,7 @@ const Browse = () => {
     const [hasMore, setHasMore] = useState(true);
     const observer = useRef<IntersectionObserver | null>(null);
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_LOCAL;
 
     const fetchMessages = async (recipient: string, pageNum: number) => {
         if (loading || !hasMore) return;
@@ -144,8 +144,8 @@ const Browse = () => {
                         ref={index === messages.length - 1 ? lastMessageRef : undefined}
                     >
                         <div className="font-bold text-lg p-3">To: {msg.recipient}</div>
-                        <p className="font-mono text-2xl p-3 flex-grow ">
-                            {msg.message}
+                        <p className="font-mono text-xl p-3 flex-grow ">
+                            {msg.message.length > 50 ? `${msg.message.slice(0, 50)}...` : msg.message}
                         </p>
                         <Link href={`${baseUrl}/view/${msg?._id}`} target="_blank" rel="noopener noreferrer">
                             <div className="bg-slate-200  h-16 flex items-center justify-around px-4 py-2 rounded-br-lg rounded-bl-lg shadow-sm">
@@ -160,7 +160,7 @@ const Browse = () => {
                                     <div className="text-sm">{msg?.songname}</div>
                                 </div>
                                 <div className="ml-auto lg:mr-0">
-                                    <AudioLines size={26} />
+                                    <AudioLines size={22} />
                                 </div>
                             </div>
                         </Link>
