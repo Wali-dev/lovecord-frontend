@@ -43,7 +43,7 @@ const NavBar = () => {
             </div>
 
             {isOpen && (
-                <div className='absolute top-16 left-0 w-full bg-white shadow-md flex flex-col items-center py-4 sm:hidden z-[9999]'>
+                <div className={`first-line:absolute top-16 left-0 w-full bg-white shadow-md ${JuraFont.className} flex flex-col items-center py-4 sm:hidden z-[9999]`}>
                     <Link href="/submit" className="cursor-pointer text-lg py-2" onClick={() => setIsOpen(false)}>
                         Post
                     </Link>

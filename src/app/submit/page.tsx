@@ -48,7 +48,7 @@ const Submit: React.FC = () => {
     const [generatedUrl, setGeneratedUrl] = useState(' ')
 
 
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL_LOCAL
+    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
     const client_Id = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID
     const client_Secret = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_SECRET
