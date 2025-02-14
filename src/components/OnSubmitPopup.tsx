@@ -27,7 +27,7 @@ const OnSubmitPopup: React.FC<OnSubmitPopupProps> = ({ linkToCopy, onClose }) =>
     };
 
     return (
-        <Card className="max-w-2xl mx-auto bg-gradient-to-r from-rose-50 to-pink-50 border-2 border-rose-100 relative">
+        <Card className="min-w-72 sm:max-w-2xl mx-auto bg-gradient-to-r from-rose-50 to-pink-50 border-2 border-rose-100 relative">
             <Button
                 onClick={onClose}
                 variant="ghost"
@@ -36,10 +36,10 @@ const OnSubmitPopup: React.FC<OnSubmitPopupProps> = ({ linkToCopy, onClose }) =>
                 <X size={20} />
             </Button>
 
-            <CardContent className="p-6 space-y-6">
+            <CardContent className="px-2 sm:p-6 space-y-6">
                 <div className="text-center space-y-4">
                     <div className="flex justify-center">
-                        <div className="h-px w-16 bg-gradient-to-r from-transparent via-rose-300 to-transparent my-4" />
+                        <div className="h-px sm:w-16 bg-gradient-to-r from-transparent via-rose-300 to-transparent my-4" />
                     </div>
 
                     <p className="font-serif text-xl text-rose-700 italic">
