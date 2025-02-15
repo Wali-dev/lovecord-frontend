@@ -19,7 +19,7 @@ const NavBar = () => {
 
     return (
         <div className='border-b-2 flex items-center justify-between min-h-[60px] w-full sm:max-w-3xl mx-auto px-4 relative z-[9999]'>
-            <Link href='/'><div className={`text-xl sm:text-4xl mr-4 ${fleurFont.className}`} >LoveCord</div></Link>
+            <Link href='/'><div className={`text-3xl sm:text-5 mr-4 ${fleurFont.className}`} >LoveCord</div></Link>
 
             <div className={`hidden sm:flex gap-6 font-bold ${JuraFont.className}`}>
                 <Link href="/submit" className="cursor-pointer text-lg">
