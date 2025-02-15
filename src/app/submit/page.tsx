@@ -237,7 +237,7 @@ const Submit: React.FC = () => {
                                     <FormItem>
                                         <FormLabel>Recipient</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Recipient's name" {...field} />
+                                            <Input placeholder="Recipient's name" {...field} required />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -255,6 +255,7 @@ const Submit: React.FC = () => {
                                                 placeholder="Your message"
                                                 className="h-20 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                                                 {...field}
+                                                required
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -278,6 +279,7 @@ const Submit: React.FC = () => {
                                                     field.onChange(e)
                                                     debounced(e.target.value)
                                                 }}
+
                                             />
                                         </FormControl>
                                         {selectedSongDiv && (
@@ -312,7 +314,7 @@ const Submit: React.FC = () => {
                                 ))}
                             </div>
 
-                            <Button type="submit" disabled={isSubmitting} className="w-full bg-[#F24463]">
+                            <Button type="submit" disabled={isSubmitting || !selectedSongDiv} className="w-full bg-[#F24463]">
                                 {isSubmitting ? (
                                     <>
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
