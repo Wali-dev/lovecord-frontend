@@ -12,7 +12,7 @@ const Footer = () => {
     return (
         <footer className="border-t-2 text-center py-4 w-full">
             <div className={`flex flex-wrap justify-center gap-4 text-base ${JuraFont.className}`}>
-                <Link href="/feedback" className="cursor-pointer hover:underline">
+                <Link href="https://docs.google.com/forms/d/e/1FAIpQLSfiDxD5wJ3tPxFqo18WvwIvFMlUylWzKqBwFGukYg72XsHrtQ/viewform?usp=header" className="cursor-pointer hover:underline">
                     Feedback
                 </Link>
                 <Link href="/about-us" className="cursor-pointer hover:underline">
@@ -22,7 +22,7 @@ const Footer = () => {
                     Support
                 </Link>
             </div>
-            <p className="mt-2 text-sm">2025 LoveCord. All rights reserved.</p>
+            <p className="mt-2 font-serif text-sm ">2025 LoveCord. All rights reserved.</p>
         </footer>
     );
 };

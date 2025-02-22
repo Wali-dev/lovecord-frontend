@@ -14,9 +14,23 @@ import { Url } from "next/dist/shared/lib/router/router";
 
 
 //Fonts for showing messages
-import { Beth_Ellen } from 'next/font/google'
+// import { Beth_Ellen } from 'next/font/google'
 
-const bethElenFont = Beth_Ellen({
+import { Reenie_Beanie } from "next/font/google";
+
+// const bethElenFont = Beth_Ellen({
+//     subsets: ["latin"],
+//     weight: "400",
+// })
+
+import { Shadows_Into_Light } from "next/font/google";
+
+const ShadowIntoLightFont = Shadows_Into_Light({
+    subsets: ["latin"],
+    weight: "400",
+})
+
+const ReenieBeanieFont = Reenie_Beanie({
     subsets: ["latin"],
     weight: "400",
 })
@@ -115,7 +129,7 @@ const Browse = () => {
                 </div>
             </div>
             <div className="font-mono mb-5 px-4 sm:max-w-3xl text-center ">
-                We’d love to hear your feedback and suggestions to help us improve LoveChord. <Link href={'/feedback'} className="underline">Click here</Link> to share your thoughts with us!
+                We’d love to hear your feedback and suggestions to help us improve LoveChord. <Link href={'https://docs.google.com/forms/d/e/1FAIpQLSfiDxD5wJ3tPxFqo18WvwIvFMlUylWzKqBwFGukYg72XsHrtQ/viewform?usp=header'} className="underline">Click here</Link> to share your thoughts with us!
             </div>
             <div className="w-full sm:max-w-3xl mb-5">
                 <Form {...form}>
@@ -151,13 +165,13 @@ const Browse = () => {
                         className="h-56 rounded-lg flex flex-col justify-between border shadow-sm relative rounded-br-lg rounded-bl-lg"
                         ref={index === messages.length - 1 ? lastMessageRef : undefined}
                     >
-                        <div className="font-bold  p-3">To: {msg.recipient}</div>
-                        <p className={`text-lg p-3 flex-grow ${bethElenFont.className}`}>
-                            {msg.message.length > 50 ? `${msg.message.slice(0, 50)}...` : msg.message}
+                        <div className={`font-extrabold text-xl p-3 ${ShadowIntoLightFont.className}`}>To: {msg.recipient}</div>
+                        <p className={`mt-[-21px] text-3xl p-3 flex-grow ${ReenieBeanieFont.className}`}>
+                            {msg.message.length > 50 ? `${msg.message.slice(0, 60)}...` : msg.message}
                         </p>
                         <Link href={`${baseUrl}/view/${msg?._id}`} target="_blank" rel="noopener noreferrer">
                             <div className="bg-slate-200  h-16 flex items-center justify-around px-4 py-2 rounded-br-lg rounded-bl-lg shadow-sm">
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-2">
                                     <Image
                                         src={msg?.songimgae}
                                         alt={msg?.songname}
