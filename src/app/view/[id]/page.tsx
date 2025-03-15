@@ -143,7 +143,7 @@ const Page = () => {
                             Also, here&apos;s a message from the sender:
                         </p>
                         <div className="bg-muted p-4 rounded-lg">
-                            <p className={`text-center text-lg ${ReenieBeanieFont.className}`}>{message}</p>
+                            <p className={`text-center text-3xl ${ReenieBeanieFont.className}`}>{message}</p>
                             <p className="text-center text-sm text-muted-foreground mt-2">
                                 <span>Sent </span>
                                 {createdAt}
